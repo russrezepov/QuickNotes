@@ -1,18 +1,23 @@
 package com.russrezepov.mynotes.model;
 
+import android.content.Intent;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.tabs.TabLayout;
 import com.russrezepov.mynotes.R;
+import com.russrezepov.mynotes.TheNoteDetails;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
@@ -31,19 +36,42 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
         return new ViewHolder(view);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         //Binding data from MainActivity, when Adapter object is created, to this View that we have here
         holder.noteTitle.setText(titles.get(position));
         holder.noteContent.setText(content.get(position));
+        holder.mCardView.setBackgroundColor(holder.view.getResources().getColor(getRandomColor(),null));
 
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), "The Item is Clicked", Toast.LENGTH_SHORT).show();
+                //getting current context where we are starting the Activity and passing them to another activity
+                Intent i = new Intent(v.getContext(),TheNoteDetails.class);
+                v.getContext().startActivity(i); //Not passing anything yet. Just getting current context and passing current context
+
             }
         });
 
+    }
+
+    private int getRandomColor() {
+        List<Integer> colorCode = new ArrayList<>();
+        colorCode.add(R.color.blue);
+        colorCode.add(R.color.yellow);
+        colorCode.add(R.color.skyBlue);
+        colorCode.add(R.color.lightPurple);
+        colorCode.add(R.color.lightGreen);
+        colorCode.add(R.color.greenlight);
+        colorCode.add(R.color.gray);
+        colorCode.add(R.color.pink);
+        colorCode.add(R.color.red);
+        colorCode.add(R.color.notgreen);
+
+        Random randomColor = new Random();
+        int numberColor = randomColor.nextInt(colorCode.size());
+        return colorCode.get(numberColor);
     }
 
     @Override
@@ -54,11 +82,13 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView noteTitle, noteContent;
         View view;
+        CardView mCardView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             noteTitle = itemView.findViewById(R.id.titles);
             noteContent = itemView.findViewById(R.id.content);
+            mCardView = itemView.findViewById(R.id.noteCard);
             view = itemView; //Handles clicks on Recycle View items. Clicks are redirected to the inside of a Note
         }
     }
