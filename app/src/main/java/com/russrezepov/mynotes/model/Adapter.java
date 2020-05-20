@@ -38,17 +38,23 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         //Binding data from MainActivity, when Adapter object is created, to this View that we have here
         holder.noteTitle.setText(titles.get(position));
         holder.noteContent.setText(content.get(position));
-        holder.mCardView.setBackgroundColor(holder.view.getResources().getColor(getRandomColor(),null));
+        final int colorCode = getRandomColor();
+        holder.mCardView.setBackgroundColor(holder.view.getResources().getColor(colorCode,null));
 
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //getting current context where we are starting the Activity and passing them to another activity
                 Intent i = new Intent(v.getContext(),TheNoteDetails.class);
+                //When someone clicks on the first item in the RecyclerView it is going to get the position as Zero -> Position
+                //passing the title and description to the NoteDetails
+                i.putExtra("title", titles.get(position));
+                i.putExtra("content", content.get(position));
+                i.putExtra("color", colorCode);
                 v.getContext().startActivity(i); //Not passing anything yet. Just getting current context and passing current context
 
             }

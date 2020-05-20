@@ -26,6 +26,7 @@
                 android:layout_height="wrap_content"
                 android:text="TextView"
                 android:textColor="#FFF"
+                android:textSize="18sp"
                 android:layout_marginRight="20dp"
                 app:layout_anchor="@+id/appBarLayout2"
                 app:layout_anchorGravity="center">

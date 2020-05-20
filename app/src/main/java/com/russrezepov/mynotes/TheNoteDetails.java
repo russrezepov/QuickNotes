@@ -1,5 +1,6 @@
 package com.russrezepov.mynotes;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -9,8 +10,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 public class TheNoteDetails extends AppCompatActivity {
 
@@ -22,8 +25,16 @@ public class TheNoteDetails extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        
+        Intent data = getIntent(); //Getting data from anotehr activity - When someone clicks on the RecyclerView Note
 
+        TextView title = findViewById(R.id.noteDetailsTitle);
+        TextView content = findViewById(R.id.noteDetailsContent);
+        //Adding Scrolling feature to the content view
+        content.setMovementMethod(new ScrollingMovementMethod());
+
+        content.setText(data.getStringExtra("content")); //getting content from another activity and settign it to noteDetailsContent textview
+        content.setBackgroundColor(getResources().getColor(data.getIntExtra("code",0),null)); //Setting the same color of a note when clicking on it
+        title.setText(data.getStringExtra("title")); //getting content from another activity and settign it to noteDetailsContent textview
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
