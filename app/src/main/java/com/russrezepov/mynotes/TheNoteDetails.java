@@ -36,7 +36,7 @@ public class TheNoteDetails extends AppCompatActivity {
         content.setMovementMethod(new ScrollingMovementMethod());
 
         content.setText(data.getStringExtra("content")); //getting content from another activity and settign it to noteDetailsContent textview
-        content.setBackgroundColor(getResources().getColor(data.getIntExtra("code",0),null)); //Setting the same color of a note when clicking on it
+        content.setBackgroundColor(getResources().getColor(data.getIntExtra("color",0),null)); //Setting the same color of a note when clicking on it
         title.setText(data.getStringExtra("title")); //getting content from another activity and settign it to noteDetailsContent textview
 
         FloatingActionButton fab = findViewById(R.id.fab);

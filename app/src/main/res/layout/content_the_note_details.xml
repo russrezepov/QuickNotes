@@ -15,11 +15,12 @@
         android:isScrollContainer="true"
         android:padding="16dp"
         android:scrollbars="vertical"
-        android:text="TextView"
+        android:text="@string/textview"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></TextView>
+        app:layout_constraintTop_toTopOf="parent">
+    </TextView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
