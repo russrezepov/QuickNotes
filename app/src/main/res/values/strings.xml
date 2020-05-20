@@ -12,4 +12,7 @@
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="title_activity_the_note_details">TheNoteDetails</string>
+    <string name="title_activity_add_note">AddNote</string>
+    <string name="untitled"><![CDATA[<Untitled>]]></string>
+    <string name="enter_note_title_here">Enter Note Title Here</string>
 </resources>

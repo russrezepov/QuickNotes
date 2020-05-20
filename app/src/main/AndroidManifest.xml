@@ -10,6 +10,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".AddNote"
+            android:label="@string/title_activity_add_note"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".TheNoteDetails"
             android:label="@string/title_activity_the_note_details"
             android:theme="@style/AppTheme.NoActionBar" />
