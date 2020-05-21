@@ -10,9 +10,14 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.os.PersistableBundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -81,6 +86,25 @@ public class AddNote extends AppCompatActivity {
                 });
             }
         });
+        //Back Button in the Toolbar
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    //Adding Close Menu button to Add Note Activity
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.close_add_note,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    //Handling on Click event on Close Menu Button
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.menuClose) {
+            Toast.makeText(this, "The Note is Not Saved", Toast.LENGTH_SHORT).show();
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

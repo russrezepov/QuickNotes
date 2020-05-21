@@ -14,9 +14,15 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.core.OrderBy;
 import com.russrezepov.mynotes.model.Adapter;
 
 import java.util.ArrayList;
@@ -30,12 +36,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     RecyclerView noteLists;
     Adapter adapter;
 
+    FirebaseFirestore fStore;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        fStore = FirebaseFirestore.getInstance();
+        Query query = fStore.collection("notes").orderBy("title",Query.Direction.DESCENDING);
+        //executing the query
+        FirestoreRecyclerOptions<>
 
         noteLists = findViewById(R.id.notelist);
         drawerLayout = findViewById(R.id.drawer);
@@ -62,6 +75,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //Staggered layout expands based on Context Size
         noteLists.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
         noteLists.setAdapter(adapter);
+
+        FloatingActionButton fab = findViewById(R.id.addNoteFloat);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(view.getContext(), AddNote.class));
+
+            }
+
+        });
+
+
     }
 
     @Override

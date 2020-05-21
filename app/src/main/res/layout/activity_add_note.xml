@@ -45,9 +45,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:backgroundTint="@color/colorPrimaryDark"
+        app:backgroundTint="@color/colorPrimary"
         app:maxImageSize="30dp"
-        app:srcCompat="@drawable/ic_save_black_24dp" />
+        app:srcCompat="@drawable/ic_save_white_24dp" />
 
 
 
