@@ -139,6 +139,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 noteViewHolder.noteContent.setText(note.getContent());
                 final int colorCodes = getRandomColor();
                 noteViewHolder.mCardView.setBackgroundColor(noteViewHolder.view.getResources().getColor(colorCodes,null));
+                //getting each doc id to be able to update them in EditNote using i as a position in collections
+                final String docId = noteAdapter.getSnapshots().getSnapshot(i).getId();
 
                 noteViewHolder.view.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -151,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         i.putExtra("title", note.getTitle());
                         i.putExtra("content", note.getContent());
                         i.putExtra("color", colorCodes);
+                        i.putExtra("noteId",docId);
                         v.getContext().startActivity(i); //Not passing anything yet. Just getting current context and passing current context
 
                     }

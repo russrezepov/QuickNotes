@@ -15,6 +15,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 public class TheNoteDetails extends AppCompatActivity {
@@ -28,23 +29,29 @@ public class TheNoteDetails extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        Intent data = getIntent(); //Getting data from anotehr activity - When someone clicks on the RecyclerView Note
+        //Getting data from anotehr activity - When someone clicks on the RecyclerView Note
+        final Intent data = getIntent();
 
         TextView title = findViewById(R.id.noteDetailsTitle);
         TextView content = findViewById(R.id.noteDetailsContent);
         //Adding Scrolling feature to the content view
         content.setMovementMethod(new ScrollingMovementMethod());
 
-        content.setText(data.getStringExtra("content")); //getting content from another activity and settign it to noteDetailsContent textview
+        //getting content from another activity and settign it to noteDetailsContent textview
+        content.setText(data.getStringExtra("content"));
+        //getting content from another activity and settign it to noteDetailsContent textview
+        title.setText(data.getStringExtra("title"));
         content.setBackgroundColor(getResources().getColor(data.getIntExtra("color",0),null)); //Setting the same color of a note when clicking on it
-        title.setText(data.getStringExtra("title")); //getting content from another activity and settign it to noteDetailsContent textview
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent i = new Intent(view.getContext(), EditNote.class);
+                i.putExtra("title",data.getStringExtra("title"));
+                i.putExtra("content",data.getStringExtra("content"));
+                i.putExtra("noteId",data.getStringExtra("noteId"));
+                startActivity(i);
             }
         });
     }

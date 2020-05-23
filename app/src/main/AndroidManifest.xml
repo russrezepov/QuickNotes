@@ -12,7 +12,11 @@
         <activity
             android:name=".AddNote"
             android:label="@string/title_activity_add_note"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".EditNote"
+            android:label="EditNote"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".TheNoteDetails"
             android:label="@string/title_activity_the_note_details"
@@ -22,6 +26,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
