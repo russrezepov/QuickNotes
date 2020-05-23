@@ -17,12 +17,15 @@ import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +33,7 @@ import android.widget.Toast;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -132,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         noteAdapter = new FirestoreRecyclerAdapter<Note, NoteViewHolder> (allNotes) {
             @RequiresApi(api = Build.VERSION_CODES.M)
-            protected void onBindViewHolder(@NonNull NoteViewHolder noteViewHolder, int i, @NonNull final Note note) {
+            protected void onBindViewHolder(@NonNull NoteViewHolder noteViewHolder, final int i, @NonNull final Note note) {
 
                 //Binding data from MainActivity, when Adapter object is created, to this View that we have here
                 noteViewHolder.noteTitle.setText(note.getTitle());
@@ -156,6 +160,50 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         i.putExtra("noteId",docId);
                         v.getContext().startActivity(i); //Not passing anything yet. Just getting current context and passing current context
 
+                    }
+                });
+
+                //Adding menu Edit & Delete functionality for each Note in Main Activity
+                ImageView menuIcon = noteViewHolder.view.findViewById(R.id.menuIcon);
+                menuIcon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(final View v) {
+                        final String docId = noteAdapter.getSnapshots().getSnapshot(i).getId();
+                        PopupMenu popupMenu = new PopupMenu(v.getContext(),v);
+                        popupMenu.setGravity(Gravity.END);
+                        popupMenu.getMenu().add("Edit").setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                Intent i = new Intent(v.getContext(), EditNote.class);
+                                i.putExtra("title",note.getTitle());
+                                i.putExtra("content",note.getContent());
+                                i.putExtra("noteId",docId);
+                                startActivity(i);
+                                return false;
+
+                            }
+                        });
+                       popupMenu.getMenu().add("Delete").setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                           @Override
+                           public boolean onMenuItemClick(MenuItem item) {
+                               DocumentReference docRef = fStore.collection("notes").document(docId);
+                               docRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                   @Override
+                                   public void onSuccess(Void aVoid) {
+                                       Toast.makeText(MainActivity.this, "Note Deleted", Toast.LENGTH_SHORT).show();
+                                   }
+                               }).addOnFailureListener(new OnFailureListener() {
+                                   @Override
+                                   public void onFailure(@NonNull Exception e) {
+                                       Toast.makeText(MainActivity.this, "Error Deleting Note", Toast.LENGTH_SHORT).show();
+                                   }
+                               });
+
+                               return false;
+                           }
+                       });
+
+                       popupMenu.show();
                     }
                 });
             }
