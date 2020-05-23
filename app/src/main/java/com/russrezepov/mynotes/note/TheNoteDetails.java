@@ -1,11 +1,11 @@
-package com.russrezepov.mynotes;
+package com.russrezepov.mynotes.note;
 
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import com.russrezepov.mynotes.R;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -15,7 +15,6 @@ import androidx.appcompat.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 public class TheNoteDetails extends AppCompatActivity {

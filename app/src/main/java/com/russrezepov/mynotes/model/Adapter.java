@@ -13,7 +13,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.russrezepov.mynotes.R;
-import com.russrezepov.mynotes.TheNoteDetails;
+import com.russrezepov.mynotes.note.TheNoteDetails;
 
 import java.util.ArrayList;
 import java.util.List;

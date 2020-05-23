@@ -2,11 +2,26 @@
 <resources>
     <array name="preloaded_fonts" translatable="false">
         <item>@font/allerta</item>
+        <item>@font/arbutus</item>
+        <item>@font/asap_bold</item>
+        <item>@font/bevan</item>
+        <item>@font/capriola</item>
+        <item>@font/days_one</item>
+        <item>@font/denk_one</item>
+        <item>@font/goblin_one</item>
+        <item>@font/gravitas_one</item>
+        <item>@font/knewave</item>
+        <item>@font/paprika</item>
+        <item>@font/passion_one</item>
+        <item>@font/pattaya</item>
         <item>@font/prosto_one</item>
         <item>@font/racing_sans_one</item>
         <item>@font/ramaraja</item>
+        <item>@font/roboto_black</item>
         <item>@font/roboto_black_italic</item>
         <item>@font/roboto_condensed_bold_italic</item>
         <item>@font/roboto_medium_italic</item>
+        <item>@font/ruslan_display</item>
+        <item>@font/ultra</item>
     </array>
 </resources>
