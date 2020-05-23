@@ -11,6 +11,25 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+# Add this global rule
+    -keepattributes Signature
+
+    # This rule will properly ProGuard all the model classes in
+    # the package com.yourcompany.models. Modify to fit the structure
+    # of your app.
+    -keepclassmembers class com.russrezepov.mynotes.model.** {
+      *;
+    }
+    -keep class com.google.firebase.example.fireeats.model.** { *; }
+    # Keep custom model classes
+    -keep class com.google.firebase.example.fireeats.java.model.** { *; }
+    -keep class com.google.firebase.example.fireeats.kotlin.model.** { *; }
+
+    # https://github.com/firebase/FirebaseUI-Android/issues/1175
+    -dontwarn okio.**
+    -dontwarn retrofit2.Call
+    -dontnote retrofit2.Platform$IOS$MainThreadExecutor
+    -keep class android.support.v7.widget.RecyclerView { *; }
 
 # Uncomment this to preserve the line number information for
 # debugging stack traces.

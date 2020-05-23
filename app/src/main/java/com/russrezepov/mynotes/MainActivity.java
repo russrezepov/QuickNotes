@@ -7,32 +7,47 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.russrezepov.mynotes.model.Adapter;
+import com.russrezepov.mynotes.model.Note;
+import com.russrezepov.mynotes.model.NoteAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -40,36 +55,88 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle toggle;
     NavigationView nav_view;
-    RecyclerView noteLists;
+    RecyclerView noteList;
+    FloatingActionButton fab;
 
-    private FirebaseFirestore fStore = FirebaseFirestore.getInstance();
-    private CollectionReference collectionNotes = fStore.collection("notes");
-    private NoteAdapter adapter;
-    FirestoreRecyclerAdapter<FireNote,NoteViewHolder> noteAdapter;
+    private FirebaseFirestore fStore;
+    //private Adapter adapter;
+    //private NoteAdapter noteAdapter;
+    final static String TAG = "Firebase Not Reading";
+    final static String TAGF = "Firebase CONNECTED";
 
+
+    FirestoreRecyclerAdapter<Note,NoteViewHolder> noteAdapter;
+
+    //>>>ON CREATE <<<
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Log.i(TAGF,"onCreate");
 
-        Query query = collectionNotes; //fStore.collection("notes").orderBy("title",Query.Direction.DESCENDING);
+        drawerLayout = findViewById(R.id.drawer);
+        nav_view = findViewById(R.id.nav_view);
+        nav_view.setNavigationItemSelectedListener(this);
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.setDrawerIndicatorEnabled(true);
+        toggle.syncState();
+        noteList = findViewById(R.id.noteList);
+        fab = findViewById(R.id.addNoteFloat);
+
+        setUpRecyclerView();
+
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(view.getContext(), AddNote.class));
+
+            }
+
+        });
+
+    }
+
+    private void setUpRecyclerView() {
+
+        fStore = FirebaseFirestore.getInstance();
+        Query query = fStore.collection("notes").orderBy("title",Query.Direction.DESCENDING);
         //executing the query
-        FirestoreRecyclerOptions<FireNote> allNotes;
-        allNotes = new FirestoreRecyclerOptions.Builder<FireNote>()
-                .setQuery(query,FireNote.class)
+        FirestoreRecyclerOptions<Note> allNotes;
+        allNotes = new FirestoreRecyclerOptions.Builder<Note>()
+                .setQuery(query, Note.class)
                 .build();
 
+//        fStore.collection("notes")
+//                .get()
+//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                        if (task.isSuccessful()) {
+//                            Log.i(TAGF,"Firebase Connected Successfully");
+//                            for (QueryDocumentSnapshot document : Objects.requireNonNull(task.getResult())) {
+//                                //titles.add(document.getString("title"));
+//                                //content.add(document.getString("content"));
+//                                Log.i(TAGF,document.getString("title"));
+//                                Log.i(TAGF,document.getString("content"));
+//                                Log.i(TAGF,"Firebase Connected Successfully");
+//                            }
+//                        } else {
+//                            Log.w(TAG,"Error getting documents.", task.getException());
+//                        }
+//                    }
+//                });
 
-        noteAdapter = new FirestoreRecyclerAdapter<FireNote, NoteViewHolder>(allNotes) {
+        noteAdapter = new FirestoreRecyclerAdapter<Note, NoteViewHolder> (allNotes) {
             @RequiresApi(api = Build.VERSION_CODES.M)
-            @Override
-            protected void onBindViewHolder(@NonNull NoteViewHolder noteViewHolder, int i, @NonNull final FireNote fireNote) {
+            protected void onBindViewHolder(@NonNull NoteViewHolder noteViewHolder, int i, @NonNull final Note note) {
 
                 //Binding data from MainActivity, when Adapter object is created, to this View that we have here
-                noteViewHolder.noteTitle.setText(fireNote.getTitle());
-                noteViewHolder.noteContent.setText(fireNote.getContent());
+                noteViewHolder.noteTitle.setText(note.getTitle());
+                noteViewHolder.noteContent.setText(note.getContent());
                 final int colorCodes = getRandomColor();
                 noteViewHolder.mCardView.setBackgroundColor(noteViewHolder.view.getResources().getColor(colorCodes,null));
 
@@ -81,8 +148,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         //When someone clicks on the first item in the RecyclerView it is going to get the position as Zero -> Position
                         //passing the title and description to the NoteDetails
-                        i.putExtra("title", fireNote.getTitle());
-                        i.putExtra("content", fireNote.getContent());
+                        i.putExtra("title", note.getTitle());
+                        i.putExtra("content", note.getContent());
                         i.putExtra("color", colorCodes);
                         v.getContext().startActivity(i); //Not passing anything yet. Just getting current context and passing current context
 
@@ -98,33 +165,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         };
 
-
-
-        noteLists = findViewById(R.id.notelist);
-        drawerLayout = findViewById(R.id.drawer);
-        nav_view = findViewById(R.id.nav_view);
-        nav_view.setNavigationItemSelectedListener(this);
-        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.setDrawerIndicatorEnabled(true);
-        toggle.syncState();
-
         //Staggered layout expands based on Context Size
-        noteLists.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
-        noteLists.setAdapter(noteAdapter);
-        //noteAdapter.startListening();
-
-        FloatingActionButton fab = findViewById(R.id.addNoteFloat);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(view.getContext(), AddNote.class));
-
-            }
-
-        });
-
+        noteList.setLayoutManager(new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL));
+        noteList.setAdapter(noteAdapter);
     }
 
     @Override
@@ -160,12 +203,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    public class NoteViewHolder extends RecyclerView.ViewHolder {
+    @Override
+    protected void onStart() {
+        super.onStart();
+        noteAdapter.startListening();
+    }
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+            noteAdapter.stopListening();
+
+    }
+
+    public static class NoteViewHolder extends RecyclerView.ViewHolder {
         TextView noteTitle, noteContent;
         View view;
         CardView mCardView;
 
-        public NoteViewHolder(@NonNull final View itemView) {
+        private NoteViewHolder(@NonNull final View itemView) {
             super(itemView);
             noteTitle = itemView.findViewById(R.id.titles);
             noteContent = itemView.findViewById(R.id.content);
@@ -192,59 +249,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return colorCode.get(numberColor);
     }
 
-    //Listening for Data Changes in Firestore
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    noteAdapter.startListening();
-    }
-
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (noteAdapter != null) {
-            noteAdapter.stopListening();
-        }
-    }
-
-    public class NoteAdapter extends FirestoreRecyclerAdapter<FireNote, NoteAdapter.NoteHolder> {
-
-
-        public NoteAdapter(@NonNull FirestoreRecyclerOptions<FireNote> options) {
-            super(options);
-        }
-
-        @Override
-        protected void onBindViewHolder(@NonNull NoteHolder holder, int i, @NonNull FireNote fireNote) {
-            holder.noteTitle.setText(fireNote.getTitle());
-            holder.noteContent.setText(fireNote.getContent());
-        }
-
-
-        @NonNull
-        @Override
-        public NoteAdapter.NoteHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.note_view_layout,parent,false);
-            return new NoteHolder(v);
-        }
-
-
-        public class NoteHolder extends RecyclerView.ViewHolder {
-            TextView noteTitle, noteContent;
-            View view;
-            CardView mCardView;
-
-            public NoteHolder(@NonNull View itemView) {
-                super(itemView);
-                noteTitle = itemView.findViewById(R.id.titles);
-                noteContent = itemView.findViewById(R.id.content);
-                mCardView = itemView.findViewById(R.id.noteCard);
-                view = itemView; //Handles clicks on Recycle View items. Clicks are redirected to the inside of a Note
-            }
-        }
-    }
 
 }

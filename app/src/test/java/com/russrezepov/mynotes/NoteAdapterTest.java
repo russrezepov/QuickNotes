@@ -1,6 +1,5 @@
 package com.russrezepov.mynotes;
 
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,22 +11,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.russrezepov.mynotes.FireNote;
-import com.russrezepov.mynotes.MainActivity;
-import com.russrezepov.mynotes.R;
+import com.russrezepov.mynotes.model.Note;
+
 public class NoteAdapterTest {
 
-    public class NoteAdapter extends FirestoreRecyclerAdapter<FireNote, NoteAdapter.NoteHolder> {
+    public class NoteAdapter extends FirestoreRecyclerAdapter<Note, NoteAdapter.NoteHolder> {
 
 
-        public NoteAdapter(@NonNull FirestoreRecyclerOptions<FireNote> options) {
+        public NoteAdapter(@NonNull FirestoreRecyclerOptions<Note> options) {
             super(options);
         }
 
         @Override
-        protected void onBindViewHolder(@NonNull NoteHolder holder, int i, @NonNull FireNote fireNote) {
-            holder.noteTitle.setText(fireNote.getTitle());
-            holder.noteContent.setText(fireNote.getContent());
+        protected void onBindViewHolder(@NonNull NoteHolder holder, int i, @NonNull Note note) {
+            holder.noteTitle.setText(note.getTitle());
+            holder.noteContent.setText(note.getContent());
         }
 
 

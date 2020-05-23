@@ -21,8 +21,8 @@ import java.util.Random;
 
 public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
-    List<String> titles;
-    List<String> content;
+    private List<String> titles;
+    private List<String> content;
 
     public Adapter(List<String> title, List<String> content) {
         this.titles = title;
