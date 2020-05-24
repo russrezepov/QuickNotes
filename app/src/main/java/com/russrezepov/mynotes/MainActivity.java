@@ -108,7 +108,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fStore = FirebaseFirestore.getInstance();
         fAuth = FirebaseAuth.getInstance();
         user = fAuth.getCurrentUser();
-        Query query = fStore.collection("notes").orderBy("title",Query.Direction.DESCENDING);
+        //query notes=>UID=>MyNotes=>user all notes
+        Query query = fStore.collection("notes").document(user.getUid()).collection("myNotes").orderBy("title",Query.Direction.DESCENDING);
         //executing the query
         FirestoreRecyclerOptions<Note> allNotes;
         allNotes = new FirestoreRecyclerOptions.Builder<Note>()
@@ -265,9 +266,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //TODO: delete all the notes created by the anonymous user
+//                        fStore.collection("notes").document(user.getUid()).document()
+//                        fStore.collection("notes").document(user.getUid())
+//                                .delete()
+//                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                    @Override
+//                                    public void onSuccess(Void aVoid) {
+//                                        Log.d(TAG, "Notes successfully deleted!");
+//                                    }
+//                                })
+//                                .addOnFailureListener(new OnFailureListener() {
+//                                    @Override
+//                                    public void onFailure(@NonNull Exception e) {
+//                                        Log.w(TAG, "Error deleting Notes", e);
+//                                    }
+//                                });
 
                         //TODO: delete the anonymous user
-
                         user.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {

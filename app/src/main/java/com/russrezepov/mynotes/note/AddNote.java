@@ -5,6 +5,8 @@ import android.os.Bundle;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.russrezepov.mynotes.R;
@@ -29,6 +31,7 @@ public class AddNote extends AppCompatActivity {
     FirebaseFirestore fStore;
     EditText noteTitle, noteContent;
     ProgressBar progressBarSave;
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +42,7 @@ public class AddNote extends AppCompatActivity {
 
         //Getting instance of our databse
         fStore = FirebaseFirestore.getInstance();
+        user = FirebaseAuth.getInstance().getCurrentUser();
         noteContent = findViewById(R.id.addNoteContent);
         noteTitle = findViewById(R.id.addNoteTitle);
         progressBarSave = findViewById(R.id.progressBarSave);
@@ -63,7 +67,8 @@ public class AddNote extends AppCompatActivity {
                 //Notes is our collection will have multiple number of notes
                 //Each note will have its own field - Author, Title, Content, Time Created etc
                 //docref is pointing to a blank document that currently has no data
-                DocumentReference docref = fStore.collection("notes").document();
+                DocumentReference docref = fStore.collection("notes").document(user.getUid()).collection("myNotes").document();
+
                 //now we can isnert the data inside of this docref document
                 Map<String,Object> note = new HashMap<>();
                 note.put("title",nTitle);

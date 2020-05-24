@@ -14,6 +14,8 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.russrezepov.mynotes.MainActivity;
@@ -27,6 +29,7 @@ public class EditNote extends AppCompatActivity {
     Intent data;
     EditText editNoteTtile, editNoteContent;
     FirebaseFirestore fStore;
+    FirebaseUser user;
     ProgressBar progressBarEditNote;
 
     @Override
@@ -37,6 +40,7 @@ public class EditNote extends AppCompatActivity {
         setSupportActionBar(editNoteToolbar);
 
         fStore = fStore.getInstance();
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
         editNoteContent = findViewById(R.id.editNoteContent);
         editNoteTtile = findViewById(R.id.editNoteTitle);
@@ -69,7 +73,7 @@ public class EditNote extends AppCompatActivity {
                 //Each note will have its own field - Author, Title, Content, Time Created etc
                 //docref is pointing to a blank document that currently has no data
 
-                DocumentReference docref = fStore.collection("notes").document(data.getStringExtra("noteId"));
+                DocumentReference docref = fStore.collection("notes").document(user.getUid()).collection("myNotes").document(data.getStringExtra("noteId"));
                 //now we can isnert the data inside of this docref document
                 Map<String,Object> note = new HashMap<>();
                 note.put("title",nTitle);
