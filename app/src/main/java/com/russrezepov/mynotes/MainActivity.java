@@ -233,7 +233,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.logout:
                // FirebaseAuth.getInstance().signOut();
-                checkUser();
+                break;
+
+            case R.id.sync:
+                // sending Anonymous users only to Sync Activity aka Register New Account
+                if (user.isAnonymous()) {
+                    startActivity(new Intent(this, Register.class));
+                } else {
+                    Toast.makeText(this, "You Are Already Connected", Toast.LENGTH_SHORT).show();
+                } 
                 break;
 
             default:
