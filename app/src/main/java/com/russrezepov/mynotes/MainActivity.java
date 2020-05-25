@@ -40,6 +40,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.russrezepov.mynotes.auth.Login;
 import com.russrezepov.mynotes.auth.Register;
 import com.russrezepov.mynotes.model.Note;
 import com.russrezepov.mynotes.note.AddNote;
@@ -231,18 +232,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(new Intent(this, AddNote.class));
                 break;
 
-            case R.id.logout:
-               // FirebaseAuth.getInstance().signOut();
-                break;
-
             case R.id.sync:
                 // sending Anonymous users only to Sync Activity aka Register New Account
                 if (user.isAnonymous()) {
-                    startActivity(new Intent(this, Register.class));
+                    startActivity(new Intent(this, Login.class));
                 } else {
                     Toast.makeText(this, "You Are Already Connected", Toast.LENGTH_SHORT).show();
-                } 
+                }
                 break;
+
+            case R.id.logout:
+               checkUser();
+                break;
+
 
             default:
                 Toast.makeText(this, "Coming Soon!", Toast.LENGTH_SHORT).show();
