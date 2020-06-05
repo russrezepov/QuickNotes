@@ -19,6 +19,8 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.russrezepov.mynotes.MainActivity;
 import com.russrezepov.mynotes.R;
 
@@ -56,7 +58,7 @@ public class Register extends AppCompatActivity {
         syncAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String syncUserName = regUserName.getText().toString();
+                final String syncUserName = regUserName.getText().toString();
                 String syncEmail = regEmail.getText().toString();
                 String syncPassword = regPassword.getText().toString();
                 String syncConPassword = regConPassword.getText().toString();
@@ -80,6 +82,18 @@ public class Register extends AppCompatActivity {
                     public void onSuccess(AuthResult authResult) {
                         Toast.makeText(Register.this, "Account Created Notes Synced", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(getApplicationContext(),MainActivity.class));
+
+                        //This is the user Successfully Created Account and Synced Notes
+                        FirebaseUser fusr = fAuth.getCurrentUser();
+                        UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
+                                .setDisplayName(syncUserName)
+                                .build();
+                        fusr.updateProfile(request);
+
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
+                        finish();
+
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override

@@ -90,6 +90,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fab = findViewById(R.id.addNoteFloat);
 
 
+        View headerView = nav_view.getHeaderView(0);
+        TextView userDisplayName = headerView.findViewById(R.id.userDisplayName);
+        TextView userDisplayEmail = headerView.findViewById(R.id.userDisplayEmail);
+
+        if (user.isAnonymous()) {
+            userDisplayName.setText("Temporary Account");
+            userDisplayEmail.setVisibility(View.GONE);
+        } else {
+            userDisplayEmail.setText(user.getEmail());
+            userDisplayName.setText(user.getDisplayName());
+
+        }
+
         setUpRecyclerView();
 
 
@@ -97,6 +110,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(view.getContext(), AddNote.class));
+                overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
+                finish();
 
             }
 
@@ -189,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                        popupMenu.getMenu().add("Delete").setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                            @Override
                            public boolean onMenuItemClick(MenuItem item) {
-                               DocumentReference docRef = fStore.collection("notes").document(docId);
+                               DocumentReference docRef = fStore.collection("notes").document(user.getUid()).collection("myNotes").document(docId);
                                docRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                    @Override
                                    public void onSuccess(Void aVoid) {
@@ -230,12 +245,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId()) {
             case R.id.addNote:
                 startActivity(new Intent(this, AddNote.class));
+                overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
                 break;
 
             case R.id.sync:
                 // sending Anonymous users only to Sync Activity aka Register New Account
                 if (user.isAnonymous()) {
                     startActivity(new Intent(this, Login.class));
+                    overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
                 } else {
                     Toast.makeText(this, "You Are Already Connected", Toast.LENGTH_SHORT).show();
                 }
@@ -259,6 +276,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(getApplicationContext(), Splash.class));
+            overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
         }
     }
 
@@ -297,7 +315,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             @Override
                             public void onSuccess(Void aVoid) {
                                 startActivity(new Intent(getApplicationContext(),Splash.class));
-                                finish();
+                                overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
                             }
                         });
                     }
